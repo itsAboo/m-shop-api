@@ -151,12 +151,11 @@ export const updateQuantity: RequestHandler = async (req, res) => {
       if (cartItem[0].quantity === 1) {
         totalCartPrice =
           Number(cart[0].totalPrice) -
-          Number(cartItem[0].quantity * Number(product[0].price));
+          Number(Number(cartItem[0].quantity) * Number(product[0].price));
         totalCartItems = Number(cart[0].totalCartItems) - 1;
-        await db.execute(
-          "DELETE FROM cart_items WHERE productId = ? AND color = ? AND size = ?",
-          [productId, color, size]
-        );
+        await db.execute("DELETE FROM cart_items WHERE cartItemsId = ?", [
+          cartItem[0].cartItemsId,
+        ]);
         await db.execute(
           "UPDATE cart SET totalPrice = ?,totalCartItems = ? WHERE cartId = ?",
           [totalCartPrice, totalCartItems, cart[0].cartId]
@@ -168,14 +167,12 @@ export const updateQuantity: RequestHandler = async (req, res) => {
       totalCartPrice = Number(cart[0].totalPrice) - Number(product[0].price);
       totalCartItems = Number(cart[0].totalCartItems) - 1;
       await db.execute(
-        "UPDATE cart_items SET quantity = ?,totalPrice = ? WHERE cartId = ? AND productId = ? AND color = ? AND size = ?",
+        "UPDATE cart_items SET quantity = ?,totalPrice = ? WHERE cartId = ? AND cartItemsId = ?",
         [
           totalCartItemsQuantity,
           totalCartItemsPrice,
           cart[0].cartId,
-          productId,
-          color,
-          size,
+          cartItem[0].cartItemsId,
         ]
       );
       await db.execute(
@@ -218,10 +215,10 @@ export const deleteCartItem: RequestHandler = async (req, res) => {
       Number(cart[0].totalPrice) - Number(cartItem[0].totalPrice);
     const totalCartItems =
       Number(cart[0].totalCartItems) - Number(cartItem[0].quantity);
-    await db.execute("UPDATE cart SET totalPrice = ?,totalCartItems = ?", [
-      totalCartPrice,
-      totalCartItems,
-    ]);
+    await db.execute(
+      "UPDATE cart SET totalPrice = ?,totalCartItems = ? WHERE cartId = ?",
+      [totalCartPrice, totalCartItems, cart[0].cartId]
+    );
     res.status(200).json({ msg: "Delete cart items success" });
   } catch (error) {
     return res.status(500).json({ error });
