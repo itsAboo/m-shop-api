@@ -212,13 +212,13 @@ export const deleteCartItem: RequestHandler = async (req, res) => {
       Number(cart[0].totalPrice) - Number(cartItem[0].totalPrice);
     const totalCartItems =
       Number(cart[0].totalCartItems) - Number(cartItem[0].quantity);
-    await db.execute("DELETE FROM cart_items WHERE cartItemsId = ?", [
-      cartItem[0].cartItemsId,
-    ]);
     await db.execute(
       "UPDATE cart SET totalPrice = ?,totalCartItems = ? WHERE cartId = ?",
       [totalCartPrice, totalCartItems, cart[0].cartId]
     );
+    await db.execute("DELETE FROM cart_items WHERE cartItemsId = ?", [
+      cartItem[0].cartItemsId,
+    ]);
     res.status(200).json({ msg: "Delete cart items success" });
   } catch (error) {
     return res.status(500).json({ error });
