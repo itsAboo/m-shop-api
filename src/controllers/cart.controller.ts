@@ -206,7 +206,7 @@ export const deleteCartItem: RequestHandler = async (req, res) => {
     const cartItem = cartItems.filter(
       (c) => c.productId === productId && c.color === color && c.size === size
     );
-    if (cartItems.length === 0)
+    if (cartItem.length === 0)
       return res.status(404).json({ msg: "Cart item not found" });
     const totalCartPrice =
       Number(cart[0].totalPrice) - Number(cartItem[0].totalPrice);
