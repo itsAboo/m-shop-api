@@ -119,9 +119,11 @@ const updateQuantity = (req, res) => __awaiter(void 0, void 0, void 0, function*
             if (cartItem[0].quantity === 1) {
                 totalCartPrice =
                     Number(cart[0].totalPrice) -
-                        Number(cartItem[0].quantity * Number(product[0].price));
+                        Number(Number(cartItem[0].quantity) * Number(product[0].price));
                 totalCartItems = Number(cart[0].totalCartItems) - 1;
-                yield dbConnect_1.default.execute("DELETE FROM cart_items WHERE productId = ? AND color = ? AND size = ?", [productId, color, size]);
+                yield dbConnect_1.default.execute("DELETE FROM cart_items WHERE cartItemsId = ?", [
+                    cartItem[0].cartItemsId,
+                ]);
                 yield dbConnect_1.default.execute("UPDATE cart SET totalPrice = ?,totalCartItems = ? WHERE cartId = ?", [totalCartPrice, totalCartItems, cart[0].cartId]);
                 return res.status(200).json({ msg: "Delete cart items success" });
             }
@@ -129,13 +131,11 @@ const updateQuantity = (req, res) => __awaiter(void 0, void 0, void 0, function*
             totalCartItemsPrice = totalCartItemsQuantity * Number(product[0].price);
             totalCartPrice = Number(cart[0].totalPrice) - Number(product[0].price);
             totalCartItems = Number(cart[0].totalCartItems) - 1;
-            yield dbConnect_1.default.execute("UPDATE cart_items SET quantity = ?,totalPrice = ? WHERE cartId = ? AND productId = ? AND color = ? AND size = ?", [
+            yield dbConnect_1.default.execute("UPDATE cart_items SET quantity = ?,totalPrice = ? WHERE cartId = ? AND cartItemsId = ?", [
                 totalCartItemsQuantity,
                 totalCartItemsPrice,
                 cart[0].cartId,
-                productId,
-                color,
-                size,
+                cartItem[0].cartItemsId,
             ]);
             yield dbConnect_1.default.execute("UPDATE cart SET totalPrice = ?,totalCartItems = ? WHERE cartId = ?", [totalCartPrice, totalCartItems, cart[0].cartId]);
             return res.status(200).json({ msg: "Update cart success" });
@@ -159,16 +159,13 @@ const deleteCartItem = (req, res) => __awaiter(void 0, void 0, void 0, function*
             return res.status(404).json({ msg: "Cart not found" });
         const [cartItems] = yield dbConnect_1.default.execute("SELECT * FROM cart_items WHERE cartId = ?", [cart[0].cartId]);
         const cartItem = cartItems.filter((c) => c.productId === productId && c.color === color && c.size === size);
-        if (cartItems.length === 0)
+        if (cartItem.length === 0)
             return res.status(404).json({ msg: "Cart item not found" });
-        yield dbConnect_1.default.execute("DELETE FROM cart_items WHERE cartItemsId = ?", [
-            cartItem[0].cartItemsId,
-        ]);
         const totalCartPrice = Number(cart[0].totalPrice) - Number(cartItem[0].totalPrice);
         const totalCartItems = Number(cart[0].totalCartItems) - Number(cartItem[0].quantity);
-        yield dbConnect_1.default.execute("UPDATE cart SET totalPrice = ?,totalCartItems = ?", [
-            totalCartPrice,
-            totalCartItems,
+        yield dbConnect_1.default.execute("UPDATE cart SET totalPrice = ?, totalCartItems = ? WHERE cartId = ? AND userId = ?", [totalCartPrice, totalCartItems, cart[0].cartId, req.userId]);
+        yield dbConnect_1.default.execute("DELETE FROM cart_items WHERE cartItemsId = ?", [
+            cartItem[0].cartItemsId,
         ]);
         res.status(200).json({ msg: "Delete cart items success" });
     }
