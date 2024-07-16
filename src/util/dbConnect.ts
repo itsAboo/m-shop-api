@@ -1,5 +1,7 @@
 import mysql2 from "mysql2";
 import dotenv from "dotenv";
+import fs from "fs";
+import path from "path";
 dotenv.config();
 
 const config = {
@@ -10,6 +12,9 @@ const config = {
   connectionLimit: 10,
   waitForConnections: true,
   queueLimit: 0,
+  ssl: {
+    ca: fs.readFileSync(path.join(__dirname, "ca.pem")),
+  },
 };
 
 const db = mysql2.createPool(config);
