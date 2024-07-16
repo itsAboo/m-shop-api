@@ -137,6 +137,7 @@ export const getProductByNewest: RequestHandler = async (req, res) => {
     );
     res.status(200).json({ products: result[0] });
   } catch (error) {
+    console.log(error)
     return res.status(500).json({ error });
   }
 };

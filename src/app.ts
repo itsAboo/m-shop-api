@@ -6,6 +6,8 @@ import productRoute from "./routes/product.route";
 import wishListRoute from "./routes/wishlist.route";
 import cartRoute from "./routes/cart.route";
 import orderRoute from "./routes/order.route";
+import dotenv from "dotenv";
+dotenv.config();
 
 declare global {
   namespace Express {
@@ -16,8 +18,7 @@ declare global {
 }
 
 const app = express();
-
-const origin = "https://m-shop1.vercel.app";
+const origin = process.env.ORIGIN;
 app.use(morgan("dev"));
 app.use(cors({ origin: origin, credentials: true }));
 app.use(express.json());

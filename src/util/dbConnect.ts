@@ -11,6 +11,7 @@ const config = {
   database: process.env.DB_NAME,
   connectionLimit: 10,
   waitForConnections: true,
+  port: Number(process.env.DB_PORT),
   queueLimit: 0,
   ssl: {
     ca: fs.readFileSync(path.join(__dirname, "../../ca.pem")),
