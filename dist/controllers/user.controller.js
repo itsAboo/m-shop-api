@@ -47,6 +47,7 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             .json({ msg: "Register success", token, user: transformUser });
     }
     catch (error) {
+        console.log(error);
         return res.status(500).json({ error });
     }
 });
@@ -73,6 +74,7 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(200).json({ msg: "Login success", token, user: transformUser });
     }
     catch (error) {
+        console.log(error);
         res.status(500).json({ error });
     }
 });

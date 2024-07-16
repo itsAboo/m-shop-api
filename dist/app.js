@@ -12,8 +12,10 @@ const wishlist_route_1 = __importDefault(require("./routes/wishlist.route"));
 const cart_route_1 = __importDefault(require("./routes/cart.route"));
 const order_route_1 = __importDefault(require("./routes/order.route"));
 const app = (0, express_1.default)();
+const origin = "https://m-shop1.vercel.app";
+// "https://m-shop1.vercel.app"
 app.use((0, morgan_1.default)("dev"));
-app.use((0, cors_1.default)({ origin: "https://m-shop1.vercel.app", credentials: true }));
+app.use((0, cors_1.default)({ origin: origin, credentials: true }));
 app.use(express_1.default.json());
 app.use("/api", user_route_1.default);
 app.use("/api", product_route_1.default);
