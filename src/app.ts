@@ -17,7 +17,7 @@ declare global {
 
 const app = express();
 
-const origin = "http://localhost:5173";
+const origin = "https://m-shop1.vercel.app";
 // "https://m-shop1.vercel.app"
 app.use(morgan("dev"));
 app.use(cors({ origin: origin, credentials: true }));
